@@ -7,7 +7,7 @@ const Register = () => {
         <RegisterForm />
       </div>
       <div className="w-2/3 bg-[#0f0f16] flex justify-center items-center">
-        <img src="/treasure.png" alt="" className='w-1/5 object-contain' />
+        <img src="/login.png" alt="" className='w-1/5 object-contain' />
       </div>
     </main>
   )
