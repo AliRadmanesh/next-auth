@@ -2,6 +2,7 @@
 
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
+import { registerUser } from "@/services/auth"
 
 const RegisterForm = () => {
   const router = useRouter()
@@ -21,7 +22,12 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Register API placeholder
+    registerUser({ email, password }).then(response => {
+      if (response.status === 201) {
+        clearInputs()
+        router.push("/login")
+      } else setError(response.message)
+    })
   }
 
   return (
