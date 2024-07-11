@@ -12,12 +12,15 @@ const authHandler = NextAuth({
       async authorize (credentials) {
         try {
           return null
-        } catch (e) {
-          throw new Error(e)
+        } catch (error: any) {
+          throw new Error(error)
         }
       }
     })
-  ]
+  ],
+  pages: {
+    signIn: '/login'
+  }
 });
 
 export { authHandler as GET, authHandler as POST };
