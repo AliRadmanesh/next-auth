@@ -3,7 +3,7 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useRouter } from "next/navigation"
 
-const SignupForm = () => {
+const RegisterForm = () => {
   const router = useRouter()
 
   const [email, setEmail] = useState("")
@@ -34,4 +34,4 @@ const SignupForm = () => {
   )
 }
 
-export default SignupForm
+export default RegisterForm

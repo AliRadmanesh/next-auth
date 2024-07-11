@@ -1,10 +1,10 @@
-import SignupForm from "@/components/SignupForm"
+import RegisterForm from "@/components/RegisterForm"
 
-const Signup = () => {
+const Register = () => {
   return (
     <main className='flex h-screen'>
       <div className='w-1/3 flex justify-center items-center'>
-        <SignupForm />
+        <RegisterForm />
       </div>
       <div className="w-2/3 bg-[#0f0f16] flex justify-center items-center">
         <img src="/treasure.png" alt="" className='w-1/5 object-contain' />
@@ -13,4 +13,4 @@ const Signup = () => {
   )
 }
 
-export default Signup
+export default Register
