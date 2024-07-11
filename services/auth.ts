@@ -7,7 +7,7 @@ export const registerUser = ({ email, password }: RegisterRequestDTO) => {
       body: JSON.stringify({ email, password }),
       headers: {
         "Accept": "application/json",
-        "Content": "application/json",
+        "Content-Type": "application/json",
       }
     }).then(res => {
       res.json().then(json => resolve(json)).catch(e => reject(e))
