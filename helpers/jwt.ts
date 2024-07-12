@@ -4,7 +4,7 @@ const DEFAULT_OPTIONS = {
   expiresIn: '1m', // TODO: change to '30d'
 }
 
-export const signJwtAccessToken = (payload, options = DEFAULT_OPTIONS) => {
+export const signJwtAccessToken = (payload: any, options = DEFAULT_OPTIONS) => {
   const secretKey = process.env.JWT_SECRET_KEY
   const token = jwt.sign(payload, secretKey as string, options)
   return token;

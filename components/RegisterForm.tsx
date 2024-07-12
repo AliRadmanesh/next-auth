@@ -22,7 +22,7 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    registerUser({ email, password }).then(response => {
+    registerUser({ email, password }).then((response: any) => {
       if (response.status === 201) {
         clearInputs()
         router.push("/login")

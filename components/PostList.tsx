@@ -3,12 +3,12 @@
 import { useState, useEffect } from 'react';
 import { getAllPosts } from '@/services/post';
 
-const PostList = ({ session }) => {
+const PostList = () => {
     const [postList, setPostList] = useState([]);
 
     useEffect(() => {
         getAllPosts()
-            .then(res => {
+            .then((res: any) => {
               if (res.status === 200)
                 setPostList(res.posts);
             })
@@ -17,7 +17,7 @@ const PostList = ({ session }) => {
 
     return (
         <div className="flex flex-col space-y-12 items-center">
-            {Boolean(postList.length) && postList.map(post => (
+            {Boolean(postList.length) && postList.map((post: any) => (
                 <div key={post.id} className="group text-white flex justify-between border-4 border-white rounded-lg hover:bg-green-600 hover:border-green-600 duration-300 cursor-pointer">
                     <div>
                         <img

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import * as bcrypt from "bcrypt"
 import { signJwtAccessToken } from "@/helpers/jwt"
 
-export async function POST(request) {
+export async function POST(request: any) {
   try {
     const { email, password } = await request.json()
     

@@ -2,7 +2,7 @@ import { verifyJwt } from "@/helpers/jwt"
 import prisma from "@/helpers/prisma"
 import { NextResponse } from "next/server"
 
-export async function GET(request) {
+export async function GET(request: any) {
   try {
     const accessToken = request.headers.get("Authorization")
     const decoded = verifyJwt(accessToken)

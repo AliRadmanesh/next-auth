@@ -2,7 +2,7 @@ import prisma from "@/helpers/prisma"
 import { NextResponse } from "next/server"
 import * as bcrypt from "bcrypt"
 
-export async function POST(request) {
+export async function POST(request: any) {
   try {
     const { email, password } = await request.json()
     
