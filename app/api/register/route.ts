@@ -1,25 +1,31 @@
-import prisma from "@/helpers/prisma"
 import { NextResponse } from "next/server"
-import * as bcrypt from "bcrypt"
+import { phoneNumberNormalizer, phoneNumberValidator } from "@persian-tools/persian-tools";
+import dayjs from "dayjs";
+
+import prisma from "@/helpers/prisma"
+import { generateOtpCode } from "@/helpers/number";
 
 export async function POST(request: any) {
   try {
-    const { email, password } = await request.json()
-    
-    if (!email || !password) 
-      return NextResponse.json({ status: 400, message: "Something went wrong while trying to register" })
+    const { mobile } = await request.json()
+
+    if (!mobile || !phoneNumberValidator(mobile))
+      return NextResponse.json({ status: 400, message: "mobile is not valid!" })
+
+    const otp_code = generateOtpCode()
+    const otp_expiry = dayjs().add(2, "minute").toISOString()
 
     const user = await prisma.user.create({
       data: {
-        email: email.toLowerCase(),
-        password: await bcrypt.hash(password, 10)
+        mobile: phoneNumberNormalizer(mobile, "0"),
+        otp_code,
+        otp_expiry,
       }
     })
 
-    const { password: hashedPassword, ...result } = user
-    return NextResponse.json({ status: 201, result })
+    return NextResponse.json({ status: 201, data: { code: user.otp_code } })
   } catch (error: any) {
     console.error(error)
-    return NextResponse.json({ status: 500, result: error, message: "Something went wrong while trying to register" })
+    return NextResponse.json({ status: 500, error, message: "Something went wrong while trying to register" })
   }
 }
