@@ -4,13 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
+    "@persian-tools/persian-tools": "^3.5.2",
     "@prisma/client": "^5.16.2",
     "bcrypt": "^5.1.1",
+    "dayjs": "^1.11.11",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.4",
     "next-auth": "^4.24.7",
