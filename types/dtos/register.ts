@@ -1,13 +1,12 @@
 export interface RegisterRequestDTO {
-  email: string;
-  password: string;
+  mobile: string;
 }
 
 export interface RegisterResponseDTO {
   status: number;
   message?: string;
-  result?: {
-    id: number;
-    email: string;
+  error?: Error;
+  data?: {
+    otp: string;
   }
 }
