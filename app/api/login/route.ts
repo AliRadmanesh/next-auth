@@ -1,28 +1,29 @@
-import prisma from "@/helpers/prisma"
-import { NextResponse } from "next/server"
-import * as bcrypt from "bcrypt"
-import { signJwtAccessToken } from "@/helpers/jwt"
+import prisma from '@/helpers/prisma';
+import { NextResponse } from 'next/server';
+import { signJwtAccessToken } from '@/helpers/jwt';
 
 export async function POST(request: any) {
   try {
-    const { email, password } = await request.json()
-    
-    if (!email || !password) 
-      return NextResponse.json({ status: 400, message: "Both fields are required!" })
+    const { mobile } = await request.json();
+
+    if (!mobile) return NextResponse.json({ status: 400, message: 'Both fields are required!' });
 
     const user = await prisma.user.findFirst({
-      where: { email: email.toLowerCase() }
-    })
+      where: { mobile },
+    });
 
-    if (!user) return NextResponse.json({ status: 400, message: "user not found!" })
+    if (!user) return NextResponse.json({ status: 400, message: 'user not found!' });
 
-    if (await bcrypt.compare(password, user.password)) {
-      const { password: hashedPassword, ...result } = user
-      const accessToken = signJwtAccessToken(result)
-      return NextResponse.json({ status: 200, result: { ...result, accessToken } })
-    } else return NextResponse.json({ status: 400, message: "Password incorrect" })
+    if (mobile === user.mobile) {
+      const accessToken = signJwtAccessToken(user);
+      return NextResponse.json({ status: 200, data: { ...user, accessToken } });
+    } else return NextResponse.json({ status: 400, message: 'Password incorrect' });
   } catch (error: any) {
-    console.error(error)
-    return NextResponse.json({ status: 500, result: error, message: "Something went wrong while trying to log in" })
+    console.error(error);
+    return NextResponse.json({
+      status: 500,
+      error,
+      message: 'Something went wrong while trying to log in',
+    });
   }
 }
