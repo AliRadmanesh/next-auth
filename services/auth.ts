@@ -1,7 +1,7 @@
-import { RegisterRequestDTO } from '@/types/dtos/register';
+import { RegisterLoginUserRequestDTO, RegisterLoginUserResponseDTO } from '@/types/dtos/register';
 
-export const registerUser = ({ mobile }: RegisterRequestDTO) => {
-  return new Promise((resolve, reject) => {
+export const registerUser = ({ mobile }: RegisterLoginUserRequestDTO) => {
+  return new Promise<RegisterLoginUserResponseDTO>((resolve, reject) => {
     fetch('/api/register', {
       method: 'POST',
       body: JSON.stringify({ mobile }),

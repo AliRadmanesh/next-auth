@@ -1,8 +1,8 @@
-export interface RegisterRequestDTO {
+export interface RegisterLoginUserRequestDTO {
   mobile: string;
 }
 
-export interface RegisterResponseDTO {
+export interface RegisterLoginUserResponseDTO {
   status: number;
   message?: string;
   error?: Error;
