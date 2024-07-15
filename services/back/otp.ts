@@ -1,15 +1,27 @@
-import { SendOtpRequestDTO } from "@/types/dtos/otp";
-import { showCredit } from "@/services/urls";
+import { someTimeLater } from '@/helpers/date';
+import { SMS_PROVIDER_NUMBER } from '@/constants/sms';
+import { generateOtpMessageText } from '@/helpers/sms';
+import { sendSingleSms, showCredit } from '@/services/urls';
+import { SendOtpViaSmsRequestDTO, SendOtpViaSmsResponseDTO } from '@/types/dtos/otp';
 
-export const sendOtpViaSms = ({ mobile }: SendOtpRequestDTO) => {
-  return new Promise((resolve, reject) => {
-    fetch("/api/register", {
-      method: "POST",
-      body: JSON.stringify({ mobile }),
+const apikey = process.env.SMS_PROVIDER__API_KEY!;
+
+export const sendOtpViaSms = ({ mobile, otpCode }: SendOtpViaSmsRequestDTO) => {
+  const message = generateOtpMessageText(otpCode);
+  const body = {
+    recipient: [mobile],
+    sender: SMS_PROVIDER_NUMBER,
+    time: someTimeLater({ value: 2, unit: 'second' }),
+    message,
+  };
+  return new Promise<SendOtpViaSmsResponseDTO>((resolve, reject) => {
+    fetch(sendSingleSms, {
+      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        apikey: "v30w_YtR2p7Oo4_5eT9b1HP_tBeGrcBFKqX68AdPrcs=",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        apikey,
       },
     })
       .then((res) => {
@@ -25,11 +37,11 @@ export const sendOtpViaSms = ({ mobile }: SendOtpRequestDTO) => {
 export const checkCredit = () => {
   return new Promise((resolve, reject) => {
     fetch(showCredit, {
-      method: "GET",
+      method: 'GET',
       headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        apikey: "v30w_YtR2p7Oo4_5eT9b1HP_tBeGrcBFKqX68AdPrcs=",
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        apikey,
       },
     })
       .then((res) => {
