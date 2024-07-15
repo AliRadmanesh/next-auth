@@ -1,10 +1,12 @@
 import jwt from 'jsonwebtoken';
 
+import { User } from '@/types/models/user';
+
 const DEFAULT_OPTIONS = {
   expiresIn: '30d',
 };
 
-export const signJwtAccessToken = (payload: any, options = DEFAULT_OPTIONS) => {
+export const signJwtAccessToken = (payload: Partial<User>, options = DEFAULT_OPTIONS) => {
   const secretKey = process.env.JWT_SECRET_KEY;
   const token = jwt.sign(payload, secretKey as string, options);
   return token;

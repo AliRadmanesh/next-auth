@@ -1,8 +1,8 @@
 import prisma from '@/helpers/prisma';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { signJwtAccessToken } from '@/helpers/jwt';
 
-export async function POST(request: any) {
+export async function POST(request: NextRequest) {
   try {
     const { mobile } = await request.json();
 
