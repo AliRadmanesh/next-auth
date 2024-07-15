@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
 import { phoneNumberNormalizer, phoneNumberValidator } from "@persian-tools/persian-tools";
-import dayjs from "dayjs";
 
 import prisma from "@/helpers/prisma"
+import { someTimeLater } from "@/helpers/date";
+import { checkCredit } from "@/services/back/otp";
 import { generateOtpCode } from "@/helpers/number";
 
 export async function POST(request: any) {
@@ -13,7 +14,10 @@ export async function POST(request: any) {
       return NextResponse.json({ status: 400, message: "mobile is not valid!" })
 
     const otp_code = generateOtpCode()
-    const otp_expiry = dayjs().add(2, "minute").toISOString()
+
+    // Send OTP code via SMS
+
+    const otp_expiry = someTimeLater({ value: 2, unit: "minute" })
 
     const user = await prisma.user.create({
       data: {
@@ -22,6 +26,10 @@ export async function POST(request: any) {
         otp_expiry,
       }
     })
+
+    // Check SMS provider remaining credit to alarm me in case of low amount
+    const res = await checkCredit()
+    console.log({ res })    
 
     return NextResponse.json({ status: 201, data: { code: user.otp_code } })
   } catch (error: any) {
