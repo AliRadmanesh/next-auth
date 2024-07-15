@@ -1,16 +1,16 @@
-import RegisterForm from "@/components/RegisterForm"
+import RegisterForm from "@/components/RegisterForm";
 
 const Register = () => {
   return (
-    <main className='flex h-screen'>
-      <div className='w-1/3 flex justify-center items-center'>
+    <main className="flex h-screen">
+      <div className="flex w-1/3 items-center justify-center">
         <RegisterForm />
       </div>
-      <div className="w-2/3 bg-[#0f0f16] flex justify-center items-center">
-        <img src="/login.png" alt="" className='w-1/5 object-contain' />
+      <div className="flex w-2/3 items-center justify-center bg-[#0f0f16]">
+        <img src="/login.png" alt="" className="w-1/5 object-contain" />
       </div>
     </main>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;

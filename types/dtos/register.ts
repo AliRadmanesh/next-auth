@@ -8,5 +8,5 @@ export interface RegisterResponseDTO {
   error?: Error;
   data?: {
     otp: string;
-  }
+  };
 }

@@ -9,41 +9,41 @@ const authHandler = NextAuth({
         email: { label: "Email", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize (credentials) {
+      async authorize(credentials) {
         try {
           const response = await fetch(`${process.env.NEXTAUTH_URL}/api/login`, {
             method: "POST",
             headers: {
-              "Content-Type": "application/json"
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               email: credentials?.email,
-              password: credentials?.password
-            })
-          })
+              password: credentials?.password,
+            }),
+          });
 
           const json = await response.json();
 
-          if (response.status === 200) return json.result
-          else throw (JSON.stringify(json))
+          if (response.status === 200) return json.result;
+          else throw JSON.stringify(json);
         } catch (error: any) {
-          throw new Error(error)
+          throw new Error(error);
         }
-      }
-    })
+      },
+    }),
   ],
   pages: {
-    signIn: '/login'
+    signIn: "/login",
   },
   callbacks: {
     async jwt({ token, user }) {
-      return ({ ...token, ...user })
+      return { ...token, ...user };
     },
     async session({ session, token }) {
-      session.user = token
-      return session
-    }
-  }
+      session.user = token;
+      return session;
+    },
+  },
 });
 
 export { authHandler as GET, authHandler as POST };
