@@ -19,11 +19,11 @@ const RegisterForm = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    registerUser({ mobile }).then((response: any) => {
+    registerUser({ mobile }).then((response) => {
       if (response.status === 201) {
         clearInputs();
         router.push('/login');
-      } else setError(response.message);
+      } else setError(response?.message ?? 'Error in registering user');
     });
   };
 
