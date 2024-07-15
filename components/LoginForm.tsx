@@ -1,33 +1,33 @@
-"use client";
+'use client';
 
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
 const LoginForm = () => {
   const router = useRouter();
 
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   const handleEmailChange = (e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value);
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value);
 
   const clearInputs = () => {
-    setEmail("");
-    setPassword("");
-    setError("");
+    setEmail('');
+    setPassword('');
+    setError('');
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    signIn("credentials", { email, password, redirect: false })
+    signIn('credentials', { email, password, redirect: false })
       .then((res) => {
         if (res?.error) setError(JSON.parse(res.error).message);
         else {
           clearInputs();
-          router.push("/");
+          router.push('/');
         }
       })
       .catch((e) => console.error(e));

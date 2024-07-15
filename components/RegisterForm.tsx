@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { ChangeEvent, FormEvent, useState } from "react";
-import { useRouter } from "next/navigation";
-import { registerUser } from "@/services/auth";
+import { ChangeEvent, FormEvent, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { registerUser } from '@/services/auth';
 
 const RegisterForm = () => {
   const router = useRouter();
 
-  const [mobile, setMobile] = useState("");
-  const [error, setError] = useState("");
+  const [mobile, setMobile] = useState('');
+  const [error, setError] = useState('');
 
   const handleMobileChange = (e: ChangeEvent<HTMLInputElement>) => setMobile(e.target.value);
 
   const clearInputs = () => {
-    setMobile("");
-    setError("");
+    setMobile('');
+    setError('');
   };
 
   const handleSubmit = async (e: FormEvent) => {
@@ -22,7 +22,7 @@ const RegisterForm = () => {
     registerUser({ mobile }).then((response: any) => {
       if (response.status === 201) {
         clearInputs();
-        router.push("/login");
+        router.push('/login');
       } else setError(response.message);
     });
   };

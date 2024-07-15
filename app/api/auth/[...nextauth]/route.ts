@@ -1,20 +1,20 @@
-import NextAuth from "next-auth/next";
-import CredentialsProvider from "next-auth/providers/credentials";
+import NextAuth from 'next-auth/next';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 const authHandler = NextAuth({
   providers: [
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'text' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         try {
           const response = await fetch(`${process.env.NEXTAUTH_URL}/api/login`, {
-            method: "POST",
+            method: 'POST',
             headers: {
-              "Content-Type": "application/json",
+              'Content-Type': 'application/json',
             },
             body: JSON.stringify({
               email: credentials?.email,
@@ -33,7 +33,7 @@ const authHandler = NextAuth({
     }),
   ],
   pages: {
-    signIn: "/login",
+    signIn: '/login',
   },
   callbacks: {
     async jwt({ token, user }) {
