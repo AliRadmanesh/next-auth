@@ -1,4 +1,4 @@
-import { sendSingleSms, showCredit } from './sms';
+import { sendSingleSmsUrl, showCreditUrl } from './sms';
 
 // SMS endpoints
-export { sendSingleSms, showCredit };
+export { sendSingleSmsUrl, showCreditUrl };
