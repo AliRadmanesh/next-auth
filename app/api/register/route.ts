@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
         // Send alarm text in case of low amount in SMS provider's credit
         const showCreditResponse = await showCredit();
-        if (isResSuccessful(showCreditResponse) && showCreditResponse.data.credit < 3000000) {
+        if (isResSuccessful(showCreditResponse) && showCreditResponse.data.credit < 200000) {
           const message = SMS_LOW_CREDIT_TEXT;
           await sendSingleSms({
             mobile: ADMIN_MOBILE_NUMBER,
