@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     const otpCode = generateOtpCode();
 
     // TODO: Check how to limit number of requests each IP address can make in a certain amount of time to prevent SMS bombing!
+    // TODO: Add created_at & updated_at fields for each table
 
     const user = await prisma.user.findFirst({
       where: { mobile: mobileWithLeading0 },
