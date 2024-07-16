@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const mobileWithLeading98 = phoneNumberNormalizer(mobile, '+98');
     const otpCode = generateOtpCode();
 
-    // TODO: Check how to limit number of requests each IP address can make in a certain amount of time to prevent SMS bombing!
+    // TODO: Check how to implement API rate limit (prevent SMS bombing!) => use ArvanCloud CDN
     // TODO: Add created_at & updated_at fields for each table
 
     const user = await prisma.user.findFirst({
