@@ -3,7 +3,7 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { saveUserToken } from '@/helpers/token';
+import { saveAccessToken } from '@/helpers/token';
 import { isResSuccessful } from '@/helpers/restApi';
 import { registerUser, sendOtpCode } from '@/services/auth';
 import { useCountdownTimer } from '@/hooks/useCountdownTimer';
@@ -42,7 +42,7 @@ const RegisterForm = () => {
       sendOtpCode({ mobile, otpCode })
         .then((response) => {
           if (isResSuccessful(response)) {
-            saveUserToken(response.data.accessToken);
+            saveAccessToken(response.data.accessToken);
             router.push('/');
           } else setError(response?.message ?? 'Error in sending otp code');
         })

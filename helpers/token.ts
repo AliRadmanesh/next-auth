@@ -1,9 +1,9 @@
 import { USER_TOKEN } from '@/constants/token';
 
-const saveUserToken = (token: string) => localStorage.setItem(USER_TOKEN, token);
+const saveAccessToken = (token: string) => localStorage.setItem(USER_TOKEN, token);
 
-const getUserToken = () => localStorage.getItem(USER_TOKEN);
+const getAccessToken = () => localStorage.getItem(USER_TOKEN);
 
-const clearUserToken = () => localStorage.removeItem(USER_TOKEN);
+const clearAccessToken = () => localStorage.removeItem(USER_TOKEN);
 
-export { saveUserToken, getUserToken, clearUserToken };
+export { saveAccessToken, getAccessToken, clearAccessToken };

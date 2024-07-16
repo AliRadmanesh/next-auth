@@ -1,9 +1,9 @@
 'use client';
 
-import { clearUserToken } from '@/helpers/token';
+import { clearAccessToken } from '@/helpers/token';
 
 const LogoutButton = () => {
-  const logOutUser = () => clearUserToken();
+  const logOutUser = () => clearAccessToken();
 
   return (
     <button
