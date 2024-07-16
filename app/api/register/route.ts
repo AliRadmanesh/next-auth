@@ -1,46 +1,110 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import dayjs from 'dayjs';
 import { phoneNumberNormalizer, phoneNumberValidator } from '@persian-tools/persian-tools';
 
 import prisma from '@/helpers/prisma';
-import { someTimeLater } from '@/helpers/date';
 import { generateOtpCode } from '@/helpers/number';
-import { sendOtpViaSms } from '@/services/back/otp';
+import { isResSuccessful } from '@/helpers/restApi';
+import { generateOtpMessageText } from '@/helpers/sms';
+import { showCredit, sendSingleSms } from '@/services/back/otp';
+import { differenceBetweenDates, someTimeLater } from '@/helpers/date';
+import { ADMIN_MOBILE_NUMBER, SMS_LOW_CREDIT_TEXT } from '@/constants/sms';
 
-export async function POST(request: any) {
+export async function POST(request: NextRequest) {
   try {
     const { mobile } = await request.json();
 
     if (!mobile || !phoneNumberValidator(mobile))
       return NextResponse.json({ status: 400, message: 'mobile is not valid!' });
 
+    const mobileWithLeading0 = phoneNumberNormalizer(mobile, '0');
+    const mobileWithLeading98 = phoneNumberNormalizer(mobile, '+98');
     const otpCode = generateOtpCode();
 
-    // Send OTP code via SMS
-    const sendOtpResponse = await sendOtpViaSms({
-      mobile: phoneNumberNormalizer(mobile, '+98'),
-      otpCode,
+    // TODO: Check how to limit number of requests each IP address can make in a certain amount of time to prevent SMS bombing!
+
+    const user = await prisma.user.findFirst({
+      where: { mobile: mobileWithLeading0 },
     });
 
-    if (isResSuccessful(sendOtpResponse)) {
-      const otpExpiry = someTimeLater({ value: 2, unit: 'minute' });
+    if (!user) {
+      // Register user
 
-      const user = await prisma.user.create({
-        data: {
-          mobile: phoneNumberNormalizer(mobile, '0'),
-          otp_code: otpCode,
-          otp_expiry: otpExpiry,
-        },
+      // Send OTP code via SMS
+      const message = generateOtpMessageText(otpCode);
+      const sendOtpResponse = await sendSingleSms({
+        mobile: mobileWithLeading98,
+        message,
       });
 
-      // Check SMS provider remaining credit to alarm me in case of low amount
-      // const checkCreditResponse = await checkCredit();
+      if (isResSuccessful(sendOtpResponse)) {
+        const otpExpiry = someTimeLater({ value: 2, unit: 'minute' });
 
-      return NextResponse.json({ status: 201, data: { code: user.otp_code } });
-    } else
-      return NextResponse.json({
-        status: 500,
-        message: 'Something went wrong while trying to register',
+        const newUser = await prisma.user.create({
+          data: {
+            mobile: mobileWithLeading0,
+            otp_code: otpCode,
+            otp_expiry: otpExpiry,
+          },
+        });
+
+        // Send alarm text in case of low amount in SMS provider's credit
+        const showCreditResponse = await showCredit();
+        if (isResSuccessful(showCreditResponse) && showCreditResponse.data.credit < 3000000) {
+          const message = SMS_LOW_CREDIT_TEXT;
+          await sendSingleSms({
+            mobile: ADMIN_MOBILE_NUMBER,
+            message,
+          });
+        }
+
+        return NextResponse.json({ status: 201, data: { code: newUser.otp_code } });
+      } else
+        return NextResponse.json({
+          status: 500,
+          message: 'Something went wrong while trying to register',
+        });
+    } else {
+      // Login user
+
+      // Check if otp_expiry is valid, then don't send another SMS!
+      const remainingExpirySeconds = differenceBetweenDates({
+        firstDate: dayjs().toISOString(),
+        secondDate: user.otp_expiry.toISOString(),
+        unit: 'second',
       });
+      const isOtpCodeValid = remainingExpirySeconds > 0;
+
+      if (isOtpCodeValid)
+        return NextResponse.json({
+          status: 400,
+          message: `You received OTP code recently. Please wait ${remainingExpirySeconds} seconds and try again to get a new one!`,
+        });
+
+      // Send OTP code via SMS
+      const message = generateOtpMessageText(otpCode);
+      const sendOtpResponse = await sendSingleSms({
+        mobile: mobileWithLeading98,
+        message,
+      });
+
+      if (isResSuccessful(sendOtpResponse)) {
+        const otpExpiry = someTimeLater({ value: 2, unit: 'minute' });
+        const updatedUser = await prisma.user.update({
+          where: { mobile: mobileWithLeading0 },
+          data: {
+            otp_code: otpCode,
+            otp_expiry: otpExpiry,
+          },
+        });
+
+        return NextResponse.json({ status: 201, data: { code: updatedUser.otp_code } });
+      } else
+        return NextResponse.json({
+          status: 500,
+          message: 'Something went wrong while trying to register',
+        });
+    }
   } catch (error: any) {
     console.error(error);
     return NextResponse.json({
